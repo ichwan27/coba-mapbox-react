@@ -1,16 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-// import PolJatim from './jawa-timur.geojson';
+import DataJatim from './Data/jawa-timur.geojson';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaWNod2FuMjciLCJhIjoiY2t0NDZ5cHQ3MTEwaTJ2bWxzMWxxb212OSJ9.R7VGO4Ft1Zx9Giih-yeMcw';
-
 
 export default function App() {
 const mapContainer = useRef(null);
 const map = useRef(null);
-const [lng, setLng] = useState(107.6);
-const [lat, setLat] = useState(-6.90);
-const [zoom, setZoom] = useState(9);
+const [lng, setLng] = useState(112.6);
+const [lat, setLat] = useState(-7.80);
+const [zoom, setZoom] = useState(7);
 
 useEffect(() => {
 if (map.current) return; // initialize map only once
@@ -29,6 +28,26 @@ setLng(map.current.getCenter().lng.toFixed(4));
 setLat(map.current.getCenter().lat.toFixed(4));
 setZoom(map.current.getZoom().toFixed(2));
 });
+});
+
+useEffect(() => {
+  if (!map.current) return;
+    map.current.on('load', () => {
+      map.current.addSource('jatim',{
+        'type':'geojson',
+        'data': DataJatim
+      });
+      map.current.addLayer({
+        'id':'jatim',
+        'type' : 'fill',
+        'source' : 'jatim',
+        'layout': {},
+        'paint' : {
+          'fill-color': "#FF7300",
+          'fill-opacity' : 0.2
+        }
+      })
+    });
 });
 
 return (
